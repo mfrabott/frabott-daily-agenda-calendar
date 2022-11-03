@@ -22,11 +22,10 @@ $(function () {
     
   // var saveButtons = [saveButton9, saveButton10, saveButton11, saveButton12, saveButton13, saveButton14, saveButton15, saveButton16, saveButton17];
 
-  // var agendaEvents = JSON.parse(localStorage.getItem('agendaEvents')) ?? [];
-
-  // console.log(agendaEvents);
+  var agendaEvents = [];
 
   var saveEvent = function(buttonNumber){
+    readEventsFromStorage();
     var hourBlock = buttonNumber.parentElement;
     var newEventInput = hourBlock.children[1].value;
     var newEventHourId = buttonNumber.parentElement.id;
@@ -34,9 +33,10 @@ $(function () {
         hour : newEventHourId,
         event : newEventInput
     };
-    // TODO: debug agendaEvents.push is not a function
-    // agendaEvents.push(newEvent);
-    localStorage.setItem('agendaEvents', JSON.stringify(newEvent))
+
+    agendaEvents.push(newEvent);
+    localStorage.setItem('agendaEvents', JSON.stringify(agendaEvents))
+    readEventsFromStorage();
   };
 
     // TODO: ARRAY AND FOR LOOP - review https://stackoverflow.com/questions/19586137/addeventlistener-using-for-loop-and-passing-values
@@ -120,19 +120,9 @@ $(function () {
   
   // array with each hour id
   function readEventsFromStorage() {
-    var events = localStorage.getItem('agendaEvents');
-    console.log(events);
-    if (events) {
-      events = JSON.parse(events);
-      console.log(events);
-    } else {
-      events = [];
-      console.log(events);
-    }
-    return events;
+    agendaEvents = JSON.parse(localStorage.getItem('agendaEvents')) ?? [];
+    console.log(agendaEvents)
   }
-
-  readEventsFromStorage();
 
   // TODO: Add code to display the current date in the header of the page.
 
