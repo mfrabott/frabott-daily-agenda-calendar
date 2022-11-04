@@ -1,8 +1,5 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-$(function () {
 
+$(function () {
 
   // save buttons targeted for each hour
  	var saveButton9 = document.getElementById("9");
@@ -15,24 +12,21 @@ $(function () {
 	var saveButton16 = document.getElementById("16");
 	var saveButton17 = document.getElementById("17");
   var saveButton18 = document.getElementById("18");
+  
   var agendaEvents = [];
 
-  
-  // Function to check for existing events in local storage and put in array (empty if nothing in localStorage)
-  var readEventsFromStorage = function () {
-    agendaEvents = JSON.parse(localStorage.getItem('agendaEvents')) ?? [];
-
-  };
-
-  readEventsFromStorage();
+  // Checks for existing events in local storage and put in array (empty array if nothing in localStorage)
+  var agendaEvents = JSON.parse(localStorage.getItem('agendaEvents')) ?? [];
  
   // Function to save user input into loval storage
   var saveEvent = function(buttonNumber){
-    readEventsFromStorage();
+    // hourBlock is the container div for the specific button
     var hourBlock = buttonNumber.parentElement;
+    // the value entered by the user
     var newEventInput = hourBlock.children[1].value;
+    // id for the container div
     var newEventHourId = buttonNumber.parentElement.id;
-    
+    // new object saves the user input and container div id
     var newEvent = {
         hour: newEventHourId,
         event: newEventInput
@@ -57,9 +51,14 @@ $(function () {
    // Continuously evalute the time every second to set the appropriate class - past, present, or future
   var updateHourClass = function() {
     var currentHour = Number(dayjs().format('HH'));
+    // 
     var agendaHoursEl = $('.agendaHours');
     for (i=0; i<agendaHoursEl.children().length; i++){
+
+      // Gets the value of the number from the div id
       var hourCheck = agendaHoursEl.children().eq(i).attr('id').match(/\d+/)[0];
+
+      // If statement evaluates which classes to add and remove
       if (hourCheck == currentHour){
         $('.agendaHours').children('div').eq(i).addClass('present').removeClass('past future');
       } else if (hourCheck < currentHour){
@@ -70,11 +69,7 @@ $(function () {
     };
   };
 
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
- 
-  
+   // loops through the array pulled from localStorage and adds text to the appropriate timeslot based on key values
   for (i=0; i<agendaEvents.length; i++){
     var hourEl = document.getElementById(agendaEvents[i].hour);
     var hourTextArea = hourEl.children[1]
@@ -129,7 +124,7 @@ $(function () {
   });
 
   saveButton18.addEventListener('click', function (e) {
-      saveEvent(saveButton17);
+      saveEvent(saveButton18);
   });
 
 });
