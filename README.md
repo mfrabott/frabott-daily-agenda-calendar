@@ -46,7 +46,9 @@ While my code works, I have earmarked some things to revisit to make more effici
 
 ## Screen Capture
 
+![Screen capture of application in action] (./ass)
+![Deployed Code Quiz screen record](./assets/images/Work%20Day%20Scheduler.gif)
 
 ## Deployed Link
 
-
+https://mfrabott.github.io/frabott-daily-agenda-calendar/
