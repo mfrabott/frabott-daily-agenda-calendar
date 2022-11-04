@@ -3,6 +3,7 @@
 // in the html.
 $(function () {
 
+
   // save buttons targeted for each hour
  	var saveButton9 = document.getElementById("9");
 	var saveButton10 = document.getElementById("10");
@@ -16,34 +17,47 @@ $(function () {
   var saveButton18 = document.getElementById("18");
   var agendaEvents = [];
 
+  
+  // Function to check for existing events in local storage and put in array (empty if nothing in localStorage)
+  var readEventsFromStorage = function () {
+    agendaEvents = JSON.parse(localStorage.getItem('agendaEvents')) ?? [];
+
+  };
+
+  readEventsFromStorage();
+ 
   // Function to save user input into loval storage
   var saveEvent = function(buttonNumber){
     readEventsFromStorage();
     var hourBlock = buttonNumber.parentElement;
     var newEventInput = hourBlock.children[1].value;
     var newEventHourId = buttonNumber.parentElement.id;
+    
     var newEvent = {
-        hour : newEventHourId,
-        event : newEventInput
+        hour: newEventHourId,
+        event: newEventInput
     };
     
+    // Find and return index position of current entry for the same hour as the newEvent. Returns -1 of no current entries.
     var indexOfObject = agendaEvents.findIndex(agendaEvents => {
       return agendaEvents.hour === newEvent.hour;
     });
-    console.log(indexOfObject);
+    
+    // Check to see if there is a saved entry for the same hour - if no, add newEvent object to array; else replace existing entry with new entry
     if (indexOfObject < 0){
       agendaEvents.push(newEvent);
     } else {
       agendaEvents.splice(indexOfObject, 1, newEvent);
     };
-    
+    // Save array to local storage
     localStorage.setItem('agendaEvents', JSON.stringify(agendaEvents))
   };
 
+
    // Continuously evalute the time every second to set the appropriate class - past, present, or future
-  var updatehourClass = function() {
-  var currentHour = Number(dayjs().format('HH'));
-  var agendaHoursEl = $('.agendaHours');
+  var updateHourClass = function() {
+    var currentHour = Number(dayjs().format('HH'));
+    var agendaHoursEl = $('.agendaHours');
     for (i=0; i<agendaHoursEl.children().length; i++){
       var hourCheck = agendaHoursEl.children().eq(i).attr('id').match(/\d+/)[0];
       if (hourCheck == currentHour){
@@ -59,16 +73,13 @@ $(function () {
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
-
+ 
   
-
-
-
-  
-  var readEventsFromStorage = function () {
-    agendaEvents = JSON.parse(localStorage.getItem('agendaEvents')) ?? [];
-    console.log(agendaEvents);
-  };
+  for (i=0; i<agendaEvents.length; i++){
+    var hourEl = document.getElementById(agendaEvents[i].hour);
+    var hourTextArea = hourEl.children[1]
+    hourTextArea.textContent = agendaEvents[i].event
+  }
 
   // Displays the current date in the header of the page.
   var displayTime =function() {
@@ -79,7 +90,7 @@ $(function () {
   };
 
   setInterval(displayTime, 1000);
-  setInterval(updatehourClass, 1000);
+  setInterval(updateHourClass, 1000);
 
   saveButton9.addEventListener('click', function (e) {
     saveEvent(saveButton9);
